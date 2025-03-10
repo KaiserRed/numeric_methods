@@ -1,4 +1,4 @@
-package matrix
+package lu_decompose
 
 import "fmt"
 
