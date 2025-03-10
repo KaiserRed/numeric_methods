@@ -37,11 +37,10 @@ func LUDecomposition(A [][]float64) (L, U [][]float64, err error) {
 		}
 	}
 	return L, U, nil
-
 }
 
 // L * z = b
-func solveLowerTriangularVector(L [][]float64, b []float64) []float64 {
+func SolveLowerTriangularVector(L [][]float64, b []float64) []float64 {
 	n := len(L)
 	z := make([]float64, n)
 
@@ -56,7 +55,7 @@ func solveLowerTriangularVector(L [][]float64, b []float64) []float64 {
 }
 
 // U * x = z
-func solveUpperTriangularVector(U [][]float64, z []float64) []float64 {
+func SolveUpperTriangularVector(U [][]float64, z []float64) []float64 {
 	n := len(U)
 	x := make([]float64, n)
 
@@ -69,7 +68,8 @@ func solveUpperTriangularVector(U [][]float64, z []float64) []float64 {
 	}
 	return x
 }
-func inverseMatrix(A [][]float64) ([][]float64, error) {
+
+func InverseMatrix(A [][]float64) ([][]float64, error) {
 	n := len(A)
 	L, U, err := LUDecomposition(A)
 	if err != nil {
@@ -92,8 +92,8 @@ func inverseMatrix(A [][]float64) ([][]float64, error) {
 		for i := 0; i < n; i++ {
 			b[i] = E[i][j]
 		}
-		z := solveLowerTriangularVector(L, b)
-		x := solveUpperTriangularVector(U, z)
+		z := SolveLowerTriangularVector(L, b)
+		x := SolveUpperTriangularVector(U, z)
 
 		for i := 0; i < n; i++ {
 			X[i][j] = x[i]
@@ -102,7 +102,7 @@ func inverseMatrix(A [][]float64) ([][]float64, error) {
 	return X, nil
 }
 
-func determinant(U [][]float64) float64 {
+func Determinant(U [][]float64) float64 {
 	det := 1.0
 	for i := 0; i < len(U); i++ {
 		det *= U[i][i]
@@ -110,7 +110,7 @@ func determinant(U [][]float64) float64 {
 	return det
 }
 
-func checkSolution(A [][]float64, x []float64, b []float64) error {
+func CheckSolution(A [][]float64, x []float64, b []float64) error {
 	n := len(A)
 	result := make([]float64, n)
 
@@ -131,15 +131,15 @@ func checkSolution(A [][]float64, x []float64, b []float64) error {
 	return nil
 }
 
-func solveLinearSystem(A [][]float64, b []float64) ([]float64, error) {
+// СЛАУ A * x = b
+func SolveLinearSystem(A [][]float64, b []float64) ([]float64, error) {
 	L, U, err := LUDecomposition(A)
 	if err != nil {
 		return nil, err
 	}
 
-	z := solveLowerTriangularVector(L, b)
-	x := solveUpperTriangularVector(U, z)
+	z := SolveLowerTriangularVector(L, b)
+	x := SolveUpperTriangularVector(U, z)
 
 	return x, nil
-
 }
