@@ -1,0 +1,45 @@
+# Бинарные файлы и директории
+bin/
+dist/
+*.exe
+*.dll
+*.so
+*.a
+
+# Файлы сборки и тестов
+*.test
+*.out
+coverage.txt
+
+# Go workspace файлы
+go.work
+
+# Папки зависимостей
+vendor/
+
+# Кэш Go модулей
+/.go/
+/go/pkg/
+
+# Служебные файлы IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.code-workspace
+
+# Файлы окружения
+.env
+.env.local
+.env*.local
+
+# Локальные конфиги
+config_local.*
+secrets.*
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Автогенерируемые файлы
+debug
