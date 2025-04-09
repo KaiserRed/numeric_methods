@@ -160,22 +160,29 @@ func InverseMatrix(A [][]float64) ([][]float64, error) {
 
 func Determinant(U [][]float64, P [][]float64) float64 {
 	n := len(U)
-	det := 1.0
+	detU := 1.0
 
-	// Определитель U - произведение диагональных элементов
+	// 1. Определитель U = произведение диагонали
 	for i := 0; i < n; i++ {
-		det *= U[i][i]
+		detU *= U[i][i]
 	}
 
-	// Определитель P - (-1)^число перестановок
-	sign := 1.0
+	// 2. Определитель P = (-1)^(число перестановок)
+	swaps := 0
 	for i := 0; i < n; i++ {
 		if P[i][i] != 1 {
-			sign *= -1
+			// Находим, где стоит 1 в строке i
+			for j := i + 1; j < n; j++ {
+				if P[i][j] == 1 {
+					swaps++
+					break
+				}
+			}
 		}
 	}
+	detP := math.Pow(-1, float64(swaps))
 
-	return det * sign
+	return detU * detP
 }
 
 // Ax = b
