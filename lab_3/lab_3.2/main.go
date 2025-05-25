@@ -39,7 +39,7 @@ func main() {
 	if !spline.CheckBoundaryConditions() {
 		fmt.Println("Ошибка: нарушены граничные условия")
 	}
-	fmt.Println("Гранияный условий: Пройдена")
+	fmt.Println("Граничный условий: Пройдена")
 
 }
 
@@ -168,7 +168,7 @@ func PrintSplineInfo(s Spline, xi []float64) {
 	}
 
 	fmt.Println("\nКоэффициенты сплайна:")
-	fmt.Println("i\t[x_i-1, x_i]\ta_i\t\tb_i\t\tc_i\t\td_i")
+	fmt.Println("i  [x_i-1, x_i] \ta_i \tb_i \tc_i \td_i")
 	for i := 1; i < len(s.ai)+1; i++ {
 		if i-1 < len(s.ai) {
 			fmt.Printf("%d  [%.1f,%.1f]  %.5f  %.5f  %.5f  %.5f\n",
@@ -193,9 +193,7 @@ func (s *Spline) CheckNodeValues() bool {
 
 func (s *Spline) CheckBoundaryConditions() bool {
 	n := len(s.xi)
-	// Вторая производная в x_0 должна быть 0
 	d2_0 := 2*s.ci[0] + 6*s.di[0]*(s.xi[0]-s.xi[0])
-	// Вторая производная в x_n должна быть 0
 	d2_n := 2*s.ci[n-2] + 6*s.di[n-2]*(s.xi[n-1]-s.xi[n-2])
 
 	if math.Abs(d2_0) > 1e-9 || math.Abs(d2_n) > 1e-9 {

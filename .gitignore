@@ -33,6 +33,7 @@ vendor/
 .env.local
 .env*.local
 
+/venv
 # Локальные конфиги
 config_local.*
 secrets.*
@@ -43,3 +44,5 @@ Thumbs.db
 
 # Автогенерируемые файлы
 debug
+
+*.txt

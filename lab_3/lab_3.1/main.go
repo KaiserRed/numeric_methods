@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 func main() {
@@ -37,8 +38,9 @@ func processInterpolation(xi, yi []float64, xStar, trueValue float64) {
 	lagrangeError := math.Abs(lagrangeResult - trueValue)
 
 	printLagrangeTable(xi, yi, xStar)
-
-	fmt.Printf("\nМетод Лагранжа:\nL(%.1f) = %.6f\n", xStar, lagrangeResult)
+	fmt.Println("\nМетод Лагранжа")
+	fmt.Println(formatLagrangePolynomial(xi, yi))
+	fmt.Printf("L(%.1f) = %.6f\n", xStar, lagrangeResult)
 	fmt.Printf("Точное значение f(%.1f) = %.6f\n", xStar, trueValue)
 	fmt.Printf("Абсолютная погрешность: %.6f\n", lagrangeError)
 
@@ -46,8 +48,9 @@ func processInterpolation(xi, yi []float64, xStar, trueValue float64) {
 	newtonError := math.Abs(newtonResult - trueValue)
 
 	printDividedDifferences(xi, yi, dividedDiffs)
-
-	fmt.Printf("\nМетод Ньютона:\nP(%.1f) = %.6f\n", xStar, newtonResult)
+	fmt.Println("\nМетод Ньютона:")
+	fmt.Println(formatNewtonPolynomial(xi, dividedDiffs))
+	fmt.Printf("P(%.1f) = %.6f\n", xStar, newtonResult)
 	fmt.Printf("Точное значение f(%.1f) = %.6f\n", xStar, trueValue)
 	fmt.Printf("Абсолютная погрешность: %.6f\n", newtonError)
 }
@@ -70,7 +73,6 @@ func lagrangeInterpolation(x float64, xi, yi []float64) float64 {
 func newtonInterpolation(x float64, xi, yi []float64) (float64, [][]float64) {
 	n := len(xi)
 
-	// Создаем таблицу разделённых разностей
 	f := make([][]float64, n)
 	for i := range f {
 		f[i] = make([]float64, n)
@@ -83,7 +85,6 @@ func newtonInterpolation(x float64, xi, yi []float64) (float64, [][]float64) {
 		}
 	}
 
-	// Вычисляем значение многочлена
 	result := f[0][0]
 	product := 1.0
 	for j := 1; j < n; j++ {
@@ -124,7 +125,6 @@ func printDividedDifferences(xi, yi []float64, f [][]float64) {
 	for i := 0; i < n; i++ {
 		fmt.Printf(" %d  %6.4f  %10.6f ", i, xi[i], f[i][0])
 
-		// Выводим разделённые разности
 		if i < n-1 {
 			fmt.Printf(" %12.6f ", f[i][1])
 		} else {
@@ -143,4 +143,42 @@ func printDividedDifferences(xi, yi []float64, f [][]float64) {
 			fmt.Printf("               \n")
 		}
 	}
+}
+
+func formatLagrangePolynomial(xi, yi []float64) string {
+	var buf strings.Builder
+	buf.WriteString("L(x) = ")
+	for i := range xi {
+		if i > 0 {
+			buf.WriteString(" + ")
+		}
+		buf.WriteString(fmt.Sprintf("%.4f", yi[i]))
+		buf.WriteString(" * [")
+		for j := range xi {
+			if j != i {
+				buf.WriteString(fmt.Sprintf("(x - %.1f)/%.4f", xi[j], xi[i]-xi[j]))
+				if j < len(xi)-1 && (j != len(xi)-2 || i != len(xi)-1) {
+					buf.WriteString(" * ")
+				}
+			}
+		}
+		buf.WriteString("]")
+	}
+	return buf.String()
+}
+
+func formatNewtonPolynomial(xi []float64, diffs [][]float64) string {
+	var buf strings.Builder
+	buf.WriteString("P(x) = ")
+	buf.WriteString(fmt.Sprintf("%.6f", diffs[0][0])) // f[x0]
+
+	for j := 1; j < len(diffs[0]); j++ {
+		buf.WriteString(" + ")
+		buf.WriteString(fmt.Sprintf("%.6f", diffs[0][j])) // f[x0,x1,...,xj]
+		for k := 0; k < j; k++ {
+			buf.WriteString(fmt.Sprintf("*(x - %.4f)", xi[k]))
+		}
+	}
+
+	return buf.String()
 }

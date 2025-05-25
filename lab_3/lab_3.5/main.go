@@ -5,12 +5,10 @@ import (
 	"math"
 )
 
-// Функция для вычисления
 func f(x float64) float64 {
 	return 1 / math.Sqrt((2*x+7)*(3*x+4))
 }
 
-// Структура для хранения результатов интегрирования
 type StepResult struct {
 	x       float64
 	y       float64
@@ -19,7 +17,6 @@ type StepResult struct {
 	simpson float64
 }
 
-// Метод прямоугольников с промежуточными значениями
 func rectangleMethod(a, b float64, h float64) []StepResult {
 	n := int((b-a)/h) + 1
 	results := make([]StepResult, n)
@@ -37,7 +34,6 @@ func rectangleMethod(a, b float64, h float64) []StepResult {
 	return results
 }
 
-// Метод трапеций с промежуточными значениями
 func trapezoidMethod(a, b float64, h float64) []StepResult {
 	n := int((b-a)/h) + 1
 	results := make([]StepResult, n)
@@ -56,33 +52,29 @@ func trapezoidMethod(a, b float64, h float64) []StepResult {
 	return results
 }
 
-// Метод Симпсона с промежуточными значениями
 func simpsonMethod(a, b float64, h float64) []StepResult {
-	// Гарантируем четное количество интервалов
 	n := int(math.Round((b - a) / h))
 	if n%2 != 0 {
 		n++
 	}
-	h = (b - a) / float64(n) // Корректируем шаг
+	h = (b - a) / float64(n)
 
 	results := make([]StepResult, n+1)
-	sum := f(a) // Начинаем с первого элемента
+	sum := f(a)
 	results[0] = StepResult{x: a, y: f(a), simpson: 0}
 
 	for i := 1; i < n; i++ {
 		x := a + float64(i)*h
 		y := f(x)
 
-		// Чередуем коэффициенты 4 и 2
-		if i%2 == 1 { // Нечетные индексы (1, 3, 5...)
+		if i%2 == 1 {
 			sum += 4 * y
-		} else { // Четные индексы (2, 4, 6...)
+		} else {
 			sum += 2 * y
 		}
 
-		// Сохраняем промежуточные результаты
-		if i%2 == 1 { // Только после парных интервалов
-			currentSum := h / 3 * (sum + f(x+h)) // Добавляем последний элемент
+		if i%2 == 1 {
+			currentSum := h / 3 * (sum + f(x+h))
 			results[i+1] = StepResult{
 				x:       x + h,
 				y:       f(x + h),
@@ -91,11 +83,9 @@ func simpsonMethod(a, b float64, h float64) []StepResult {
 		}
 	}
 
-	// Добавляем последний элемент
 	sum += f(b)
 	finalResult := h / 3 * sum
 
-	// Корректируем последний элемент
 	results[n] = StepResult{
 		x:       b,
 		y:       f(b),
@@ -105,13 +95,11 @@ func simpsonMethod(a, b float64, h float64) []StepResult {
 	return results
 }
 
-// Объединение результатов всех методов
 func calculateAllMethods(a, b, h float64) []StepResult {
 	rect := rectangleMethod(a, b, h)
 	trap := trapezoidMethod(a, b, h)
 	simp := simpsonMethod(a, b, h)
 
-	// Объединяем результаты
 	maxLen := len(rect)
 	if len(trap) > maxLen {
 		maxLen = len(trap)
@@ -137,7 +125,6 @@ func calculateAllMethods(a, b, h float64) []StepResult {
 	return results
 }
 
-// Форматирование таблицы
 func printTable(title string, results []StepResult) {
 	fmt.Printf("\n%s\n", title)
 	fmt.Println("+----+-------+---------+---------------+---------------+---------------+")
@@ -154,14 +141,11 @@ func printTable(title string, results []StepResult) {
 func main() {
 	a, b := 0.0, 4.0
 	h1, h2 := 1.0, 0.5
-	//1 / math.Sqrt((2*x+7)*(3*x+4))
 	fmt.Println("Интеграл: F = ∫[1.0, 0.5] 1/√((2*x+7)*(3*x+4)) dx")
 
-	// Вычисление с шагом h1
 	resH1 := calculateAllMethods(a, b, h1)
 	printTable(fmt.Sprintf("Таблица 1: Шаг h = %.1f", h1), resH1)
 
-	// Вычисление с шагом h2
 	resH2 := calculateAllMethods(a, b, h2)
 	printTable(fmt.Sprintf("Таблица 2: Шаг h = %.2f", h2), resH2)
 
