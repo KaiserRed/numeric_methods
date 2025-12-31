@@ -162,16 +162,13 @@ func Determinant(U [][]float64, P [][]float64) float64 {
 	n := len(U)
 	detU := 1.0
 
-	// 1. Определитель U = произведение диагонали
 	for i := 0; i < n; i++ {
 		detU *= U[i][i]
 	}
 
-	// 2. Определитель P = (-1)^(число перестановок)
 	swaps := 0
 	for i := 0; i < n; i++ {
 		if P[i][i] != 1 {
-			// Находим, где стоит 1 в строке i
 			for j := i + 1; j < n; j++ {
 				if P[i][j] == 1 {
 					swaps++
